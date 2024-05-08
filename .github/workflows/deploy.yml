@@ -9,10 +9,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      # Run npm build
-      - uses: bahmutov/npm-install@v1
-      - name: npm build
-        run: npm run build
       # Move all files that should be uploaded to a new directory
       - run: mkdir ${{ github.event.repository.name }}-build && rsync -a --exclude-from='.github/exclude_list' . ${{ github.event.repository.name }}-build
       - run: cd ${{ github.event.repository.name }}-build && zip -r ../${{ github.event.repository.name }}.zip * -x "${{ github.event.repository.name }}-build/*" && cd ..
