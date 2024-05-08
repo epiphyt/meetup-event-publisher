@@ -1,0 +1,8 @@
+{
+	"name": "meetup-event-publisher",
+	"scripts": {
+		"i18n": "DOMAIN=meetup-event-publisher; wp i18n make-pot . ./languages/${DOMAIN}.pot"
+	},
+	"author": "Epiphyt",
+	"license": "GPL-2.0"
+}
