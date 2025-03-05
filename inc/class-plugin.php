@@ -54,7 +54,7 @@ final class Plugin {
 		
 		if ( $event === 'next' ) {
 			if ( ! isset( $events[0] ) ) {
-				return '';
+				return [];
 			}
 			
 			$event = $events[0];
