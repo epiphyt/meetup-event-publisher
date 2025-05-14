@@ -22,14 +22,14 @@ final class Admin {
 	public static function register_settings(): void {
 		\add_settings_section(
 			Plugin::OPTION_PREFIX,
-			null,
+			\__( 'Meetup Event Publisher', 'meetup-event-publisher' ),
 			null,
 			'writing',
 		);
 		
 		\add_settings_field(
 			Plugin::get_option_name( 'slug' ),
-			__( 'Meetup.com Slug', 'meetup-event-publisher' ),
+			__( 'Meetup slug', 'meetup-event-publisher' ),
 			[ self::class, 'settings_field_input' ],
 			'writing',
 			Plugin::OPTION_PREFIX,
@@ -37,6 +37,7 @@ final class Admin {
 				'classes' => [
 					'regular-text',
 				],
+				'description' => \__( 'The meetup slug you want to get events from. If none is set, data from all available meetups will be retrieved.', 'meetup-event-publisher' ),
 				'option' => Plugin::get_option_name( 'slug' ),
 				'type' => 'text',
 			],

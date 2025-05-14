@@ -16,7 +16,7 @@ final class Publisher {
 	 * Initialize functions.
 	 */
 	public static function init(): void {
-		\add_action( 'meetup_event_publisher_api_update', [ self::class, 'publish_event' ], 20 );
+		\add_action( Plugin::OPTION_PREFIX . '_api_update', [ self::class, 'publish_event' ], 20 );
 	}
 	
 	/**
@@ -28,7 +28,7 @@ final class Publisher {
 	public static function create_or_update_event( array $event, ?int $post_id = null ): void {
 		$login_button_markup = '<!-- wp:buttons -->
 		<div class="wp-block-buttons"><!-- wp:button -->
-		<div class="wp-block-button"><a class="wp-block-button__link wp-element-button" href="' . \sanitize_url( $event['link'] ) . '">' . \esc_html__( 'Signup now', 'meetup-event-publisher' ) . '</a></div>
+		<div class="wp-block-button"><a class="wp-block-button__link wp-element-button" href="' . \sanitize_url( $event['url'] ) . '">' . \esc_html__( 'Signup now', 'meetup-event-publisher' ) . '</a></div>
 		<!-- /wp:button --></div>
 		<!-- /wp:buttons -->';
 		$post_array = [
@@ -36,7 +36,8 @@ final class Publisher {
 			'post_status' => 'publish',
 			'post_title' => $event['name'],
 			'meta_input' => [
-				'meetup_id' => $event['id'],
+				'local_date' => $event['start_date'],
+				'meetup_id' => self::get_id_by_data( $event ),
 			],
 		];
 		
@@ -51,15 +52,38 @@ final class Publisher {
 	}
 	
 	/**
+	 * Get the event ID by its data (from the URL field).
+	 * 
+	 * @param	mixed[]	$data Meetup data
+	 * @return	string Event ID
+	 */
+	private static function get_id_by_data( array $data ): string {
+		return \end( \array_filter( \explode( '/', $data['url'] ) ) );
+	}
+	
+	/**
 	 * Publish the next event.
 	 */
 	public static function publish_event(): void {
-		$event = Plugin::get_event( 'next' );
+		$slug = \get_option( Plugin::get_option_name( 'slug' ) );
 		
-		if ( empty( $event ) ) {
-			return;
+		if ( ! empty( $slug ) ) {
+			$event = Plugin::get_event( 'next', $slug );
+			
+			if ( \is_array( $event ) ) {
+				self::set_event( $event );
+			}
 		}
-		
+		else {
+			foreach ( Plugin::get_events( 'next' ) as $event ) {
+				if ( \is_array( $event ) ) {
+					self::set_event( $event );
+				}
+			}
+		}
+	}
+	
+	private static function set_event( array $event ) {
 		$arguments = [
 			'meta_key' => 'meetup_id',
 			'meta_value' => $event['id'],

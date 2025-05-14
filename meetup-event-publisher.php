@@ -6,7 +6,7 @@ Plugin Name:	Meetup Event Publisher
 Description:	Retrieve events from meetup.com and publishes them as posts.
 Author:			Epiphyt
 Author URI:		https://epiph.yt/en/
-Version:		1.0.0
+Version:		2.0.0-dev
 License:		GPL2
 License URI:	https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain:	meetup-event-publisher
@@ -27,41 +27,41 @@ along with Meetup Event Publisher. If not, see https://www.gnu.org/licenses/gpl-
 */
 \defined( 'ABSPATH' ) || exit;
 
-\define( 'MEETUP_EVENT_PUBLISHER_VERSION', '1.0.0' );
+\define( 'MEETUP_EVENT_PUBLISHER_VERSION', '2.0.0-dev' );
+\define( 'MEETUP_EVENT_PUBLISHER_BASE', WP_PLUGIN_DIR . '/meetup-event-publisher/' );
+\define( 'MEETUP_EVENT_PUBLISHER_FILE', __FILE__ );
+\define( 'MEETUP_EVENT_PUBLISHER_URL', \plugin_dir_url( MEETUP_EVENT_PUBLISHER_FILE ) );
 
-if ( ! \defined( 'MEETUP_EVENT_PUBLISHER_BASE' ) ) {
-	\define( 'MEETUP_EVENT_PUBLISHER_BASE', WP_PLUGIN_DIR . '/meetup-event-publisher/' );
-}
-
-if ( ! \defined( 'MEETUP_EVENT_PUBLISHER_FILE' ) ) {
-	\define( 'MEETUP_EVENT_PUBLISHER_FILE', __FILE__ );
-}
-
-if ( ! \defined( 'MEETUP_EVENT_PUBLISHER_URL' ) ) {
-	\define( 'MEETUP_EVENT_PUBLISHER_URL', \plugin_dir_url( MEETUP_EVENT_PUBLISHER_FILE ) );
+if ( ! \defined( 'MEETUP_EVENT_PUBLISHER_API_BASE' ) ) {
+	if ( \wp_get_environment_type() === 'local' ) {
+		\define( 'MEETUP_EVENT_PUBLISHER_API_BASE', 'http://wp-dev.test/wp-json/' );
+	}
+	else {
+		\define( 'MEETUP_EVENT_PUBLISHER_API_BASE', 'https://events.krautpress.de/wp-json/' );
+	}
 }
 
 /**
  * Autoload all necessary classes.
  * 
- * @param	string		$class The class name of the auto-loaded class
+ * @param	string	$class_name The class name of the auto-loaded class
  */
-\spl_autoload_register( function( string $class ) {
+\spl_autoload_register( function( string $class_name ) {
 	$namespace = \strtolower( __NAMESPACE__ . '\\' );
-	$path = \explode( '\\', $class );
+	$path = \explode( '\\', $class_name );
 	$filename = \str_replace( '_', '-', \strtolower( \array_pop( $path ) ) );
-	$class = \str_replace(
+	$class_name = \str_replace(
 		[ $namespace, '\\', '_' ],
 		[ '', '/', '-' ],
-		\strtolower( $class )
+		\strtolower( $class_name )
 	);
-	$string_position = \strrpos( $class, $filename );
+	$string_position = \strrpos( $class_name, $filename );
 	
 	if ( $string_position !== false ) {
-		$class = \substr_replace( $class, 'class-' . $filename, $string_position, \strlen( $filename ) );
+		$class_name = \substr_replace( $class_name, 'class-' . $filename, $string_position, \strlen( $filename ) );
 	}
 	
-	$maybe_file = __DIR__ . '/inc/' . $class . '.php';
+	$maybe_file = __DIR__ . '/inc/' . $class_name . '.php';
 	
 	if ( \file_exists( $maybe_file ) ) {
 		require_once $maybe_file;

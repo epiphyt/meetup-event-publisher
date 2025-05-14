@@ -1,8 +1,6 @@
 <?php
 namespace epiphyt\Meetup_Event_Publisher;
 
-use DateTimeZone;
-
 /**
  * Admin functionality class.
  * 
@@ -30,10 +28,11 @@ final class Shortcodes {
 				'event' => 'next',
 				'exclude_protocol' => 'no',
 				'field' => 'name',
+				'slug' => \get_option( Plugin::get_option_name( 'slug' ) ),
 			],
 			$attributes
 		);
-		$event = Plugin::get_event( $attributes['event'] );
+		$event = Plugin::get_event( $attributes['event'], $attributes['slug'] );
 		
 		if ( empty( $event ) ) {
 			return '';
@@ -41,16 +40,34 @@ final class Shortcodes {
 		
 		switch ( $attributes['field'] ) {
 			case 'link':
+			case 'url':
 				if ( $attributes['exclude_protocol'] === 'yes' ) {
-					return \preg_replace( '/^https?:\/\//', '', $event[ $attributes['field'] ] );
+					return \preg_replace( '/^https?:\/\//', '', $event['url'] );
 				}
-				break;
+				
+				return $event['url'];
 			case 'local_date':
-				$date = new \DateTime( $event[ $attributes['field'] ] );
+			case 'start_date':
+				$date = new \DateTimeImmutable( $event['start_date'] );
 				
 				return \wp_date( \get_option( 'date_format' ), $date->getTimestamp() );
+			default:
+				$parts = \explode( '.', $attributes['field'] );
+				$value = $event;
+				
+				foreach ( $parts as $part ) {
+					if ( ! isset( $value[ $part ] ) ) {
+						return '';
+					}
+					
+					$value = $value[ $part ];
+				}
+				
+				if ( ! \is_string( $value ) ) {
+					return '';
+				}
+				
+				return $value;
 		}
-		
-		return $event[ $attributes['field'] ] ?? '';
 	}
 }

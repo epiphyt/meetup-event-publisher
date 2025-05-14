@@ -19,7 +19,7 @@ final class Plugin {
 	 */
 	public static function init(): void {
 		\add_action( 'init', [ self::class, 'load_textdomain' ], 0 );
-		\add_action( self::OPTION_PREFIX . '_api_update', [ self::class, 'get_events' ] );
+		\add_action( self::OPTION_PREFIX . '_api_update', [ self::class, 'get_events_from_api' ] );
 		
 		Admin::init();
 		Publisher::init();
@@ -42,14 +42,19 @@ final class Plugin {
 	 * 
 	 * You can get it via ID, local date, name or special keyword 'next'.
 	 * 
-	 * @param	string	$event Which event to get.
+	 * @param	string	$event Which event to get
+	 * @param	string	$slug Meetup slug
 	 * @return	array Event data
 	 */
-	public static function get_event( string $event ): array {
-		$events = (array) \get_option( Plugin::get_option_name( 'events' ) );
+	public static function get_event( string $event, string $slug ): array {
+		$events = (array) \get_option( self::get_option_name( 'events' ) );
 		
 		if ( empty( $events ) ) {
 			return [];
+		}
+		
+		if ( ! empty( $events[ $slug ] ) ) {
+			$events = $events[ $slug ];
 		}
 		
 		if ( $event === 'next' ) {
@@ -76,9 +81,46 @@ final class Plugin {
 	}
 	
 	/**
+	 * Get events data.
+	 * 
+	 * @param	string	$event Which event to get
+	 * @return	mixed[] List of event data
+	 */
+	public static function get_events( string $event ): array {
+		$events = [];
+		$event_list = (array) \get_option( self::get_option_name( 'events' ) );
+		
+		if ( $event === 'next' ) {
+			foreach ( $event_list as $meetup_events ) {
+				if ( ! isset( $meetup_events[0] ) ) {
+					continue;
+				}
+				
+				$events[] = $meetup_events[0];
+			}
+		}
+		else {
+			foreach ( $event_list as $meetup_events ) {
+				foreach ( $meetup_events as $_event ) {
+					if (
+						$event === $_event['id']
+						|| $event === $_event['local_date']
+						|| $event === $_event['name']
+					) {
+						$events[] = $_event;
+						break;
+					}
+				}
+			}
+		}
+		
+		return $events;
+	}
+	
+	/**
 	 * Get events from Meetup.com.
 	 */
-	public static function get_events(): void {
+	public static function get_events_from_api(): void {
 		$events = API::get_events();
 		
 		\update_option( self::get_option_name( 'events' ), $events );
