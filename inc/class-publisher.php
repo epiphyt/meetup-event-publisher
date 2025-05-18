@@ -83,10 +83,15 @@ final class Publisher {
 		}
 	}
 	
+	/**
+	 * Set event data.
+	 * 
+	 * @param	mixed[]	$event Current event
+	 */
 	private static function set_event( array $event ) {
 		$arguments = [
 			'meta_key' => 'meetup_id',
-			'meta_value' => $event['id'],
+			'meta_value' => self::get_id_by_data( $event ),
 			'numberposts' => 1,
 			'post_type' => 'post',
 		];

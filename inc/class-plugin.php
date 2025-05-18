@@ -42,24 +42,25 @@ final class Plugin {
 	 * 
 	 * You can get it via ID, local date, name or special keyword 'next'.
 	 * 
-	 * @param	string	$event Which event to get
+	 * @param	string	$target_event Which event to get
 	 * @param	string	$slug Meetup slug
 	 * @return	array Event data
 	 */
-	public static function get_event( string $event, string $slug ): array {
+	public static function get_event( string $target_event, string $slug ): array {
+		$event = [];
 		$events = (array) \get_option( self::get_option_name( 'events' ) );
 		
 		if ( empty( $events ) ) {
-			return [];
+			return $event;
 		}
 		
 		if ( ! empty( $events[ $slug ] ) ) {
 			$events = $events[ $slug ];
 		}
 		
-		if ( $event === 'next' ) {
+		if ( $target_event === 'next' ) {
 			if ( ! isset( $events[0] ) ) {
-				return [];
+				return $event;
 			}
 			
 			$event = $events[0];
@@ -67,9 +68,9 @@ final class Plugin {
 		else {
 			foreach ( $events as $_event ) {
 				if (
-					$event === $_event['id']
-					|| $event === $_event['local_date']
-					|| $event === $_event['name']
+					$target_event === $_event['id']
+					|| $target_event === $_event['local_date']
+					|| $target_event === $_event['name']
 				) {
 					$event = $_event;
 					break;

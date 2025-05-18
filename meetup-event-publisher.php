@@ -6,7 +6,7 @@ Plugin Name:	Meetup Event Publisher
 Description:	Retrieve events from meetup.com and publishes them as posts.
 Author:			Epiphyt
 Author URI:		https://epiph.yt/en/
-Version:		2.0.0
+Version:		2.0.1
 License:		GPL2
 License URI:	https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain:	meetup-event-publisher
@@ -27,7 +27,7 @@ along with Meetup Event Publisher. If not, see https://www.gnu.org/licenses/gpl-
 */
 \defined( 'ABSPATH' ) || exit;
 
-\define( 'MEETUP_EVENT_PUBLISHER_VERSION', '2.0.0' );
+\define( 'MEETUP_EVENT_PUBLISHER_VERSION', '2.0.1' );
 \define( 'MEETUP_EVENT_PUBLISHER_BASE', WP_PLUGIN_DIR . '/meetup-event-publisher/' );
 \define( 'MEETUP_EVENT_PUBLISHER_FILE', __FILE__ );
 \define( 'MEETUP_EVENT_PUBLISHER_URL', \plugin_dir_url( MEETUP_EVENT_PUBLISHER_FILE ) );
