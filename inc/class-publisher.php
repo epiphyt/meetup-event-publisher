@@ -58,9 +58,9 @@ final class Publisher {
 	 * @return	string Event ID
 	 */
 	private static function get_id_by_data( array $data ): string {
-		$url_parts = \explode( '/', $data['url'] );
+		$url_parts = \array_filter( \explode( '/', $data['url'] ) );
 		
-		return \end( \array_filter( $url_parts ) );
+		return \end( $url_parts );
 	}
 	
 	/**
