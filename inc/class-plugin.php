@@ -48,7 +48,7 @@ final class Plugin {
 	 */
 	public static function get_event( string $target_event, string $slug ): array {
 		$event = [];
-		$events = (array) \get_option( self::get_option_name( 'events' ) );
+		$events = \array_filter( (array) \get_option( self::get_option_name( 'events' ) ) );
 		
 		if ( empty( $events ) ) {
 			return $event;
@@ -162,7 +162,7 @@ final class Plugin {
 	 * Register the cron job.
 	 */
 	private static function register_cron(): void {
-		$date = new DateTime( 'today 00:00:00', new DateTimeZone( \get_option( 'timezone_string' ) ) );
+		$date = new DateTime( 'tomorrow 00:00:00', new DateTimeZone( \get_option( 'timezone_string' ) ) );
 		
 		\wp_schedule_event( $date->getTimestamp() + $date->getOffset(), 'daily', self::OPTION_PREFIX . '_api_update' );
 	}
