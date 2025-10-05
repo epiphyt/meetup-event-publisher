@@ -37,7 +37,7 @@ if ( ! \defined( 'MEETUP_EVENT_PUBLISHER_API_BASE' ) ) {
 		\define( 'MEETUP_EVENT_PUBLISHER_API_BASE', 'http://wp-dev.test/wp-json/' );
 	}
 	else {
-		\define( 'MEETUP_EVENT_PUBLISHER_API_BASE', 'https://events.krautpress.de/wp-json/' );
+		\define( 'MEETUP_EVENT_PUBLISHER_API_BASE', 'https://wpmeetups.de/wp-json/' );
 	}
 }
 
