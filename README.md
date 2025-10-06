@@ -25,6 +25,8 @@ Shortcode name: `[meetup_event]`
 
 `exclude_protocol`: For the field `link`, this option, if set to `yes` allows to remove the `https://` from the link to allow using the shortcode in areas where `esc_url` is used (e.g. in button blocks). Example: `[meetup_event field=link exclude_protocol=yes]`
 
+`fallback`: If the field/event has no data, the defined fallback will be displayed.
+
 `field`: Select the specific field to output. Example: `[meetup_event field="name"]`<br>
 If a field is nested, use dots to traverse the nesting. Example: `[meetup_event field="location.address.street_address"]`
 

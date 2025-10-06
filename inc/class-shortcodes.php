@@ -27,6 +27,7 @@ final class Shortcodes {
 			[
 				'event' => 'next',
 				'exclude_protocol' => 'no',
+				'fallback' => '',
 				'field' => 'name',
 				'slug' => \get_option( Plugin::get_option_name( 'slug' ) ),
 			],
@@ -35,36 +36,45 @@ final class Shortcodes {
 		$event = Plugin::get_event( $attributes['event'], $attributes['slug'] );
 		
 		if ( empty( $event ) ) {
-			return '';
+			return ! empty( $attributes['fallback'] ) ? \esc_html( $attributes['fallback'] ) : '';
 		}
 		
 		switch ( $attributes['field'] ) {
 			case 'link':
 			case 'url':
-				if ( $attributes['exclude_protocol'] === 'yes' ) {
-					return \preg_replace( '/^https?:\/\//', '', $event['url'] );
+				if ( ! isset( $event['url'] ) && ! empty( $attributes['fallback'] ) ) {
+					return \esc_html( $attributes['fallback'] );
 				}
 				
-				return $event['url'];
+				if ( $attributes['exclude_protocol'] === 'yes' ) {
+					return \rawurldecode( \preg_replace( '/^https?:\/\//', '', $event['url'] ) );
+				}
+				
+				return \esc_url( $event['url'] );
 			case 'local_date':
 			case 'start_date':
-				$date = new \DateTimeImmutable( $event['start_date'] );
-				
-				return \wp_date( \get_option( 'date_format' ), $date->getTimestamp() );
+				try {
+					$date = new \DateTimeImmutable( $event['start_date'] );
+					
+					return \esc_html( \wp_date( \get_option( 'date_format' ), $date->getTimestamp() ) );
+				}
+				catch ( \Throwable ) {
+					return ! empty( $attributes['fallback'] ) ? \esc_html( $attributes['fallback'] ) : '';
+				}
 			default:
 				$parts = \explode( '.', $attributes['field'] );
 				$value = $event;
 				
 				foreach ( $parts as $part ) {
 					if ( ! isset( $value[ $part ] ) ) {
-						return '';
+						return ! empty( $attributes['fallback'] ) ? \esc_html( $attributes['fallback'] ) : '';
 					}
 					
 					$value = $value[ $part ];
 				}
 				
 				if ( ! \is_string( $value ) ) {
-					return '';
+					return ! empty( $attributes['fallback'] ) ? \esc_html( $attributes['fallback'] ) : '';
 				}
 				
 				return $value;
