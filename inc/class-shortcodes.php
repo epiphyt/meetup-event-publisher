@@ -13,7 +13,8 @@ final class Shortcodes {
 	 * Initialize functions.
 	 */
 	public static function init(): void {
-		\add_shortcode( 'meetup_event', [ self::class, 'render_shortcode' ] );
+		\add_shortcode( 'meetup_event', [ self::class, 'render_meetup_event' ] );
+		\add_shortcode( 'meetup_event_list', [ self::class, 'meetup_event_list' ] );
 	}
 	
 	/**
@@ -22,7 +23,7 @@ final class Shortcodes {
 	 * @param	array|string	$attributes Shortcode attributes
 	 * @return	string Shortcode content
 	 */
-	public static function render_shortcode( $attributes ): string {
+	public static function render_meetup_event( $attributes ): string {
 		$attributes = \shortcode_atts(
 			[
 				'event' => 'next',
@@ -79,5 +80,57 @@ final class Shortcodes {
 				
 				return $value;
 		}
+	}
+	
+	/**
+	 * Render the meetup_event_list shortcode.
+	 * 
+	 * @param	array|string	$attributes Shortcode attributes
+	 * @return	string Shortcode content
+	 */
+	public static function meetup_event_list( $attributes ): string {
+		$attributes = \shortcode_atts(
+			[
+				'fallback' => \__( 'There is currently no data available for this meetup.', 'meetup-event-publisher' ),
+				'hidden' => '',
+				'limit' => 10,
+				'slug' => '',
+			],
+			$attributes
+		);
+		$attributes['hidden'] = \array_map( 'trim', \explode( ',', $attributes['hidden'] ) );
+		$events = Plugin::get_events();
+		
+		if ( ! empty( $attributes['slug'] ) ) {
+			if ( ! \get_option( Plugin::get_option_name( 'slug' ) ) ) {
+				$events = $events[ $attributes['slug'] ] ?? [];
+			}
+		}
+		else if ( ! \array_is_list( $events ) ) {
+			$_events = [];
+			
+			foreach ( $events as $meetup_events ) {
+				$_events = \array_merge( $_events, $meetup_events );
+			}
+			
+			$events = $_events;
+		}
+		
+		\usort( $events, static function( $a, $b ): int {
+			return \strtotime( $a['start_date'] ) - \strtotime( $b['start_date'] );
+		} );
+		
+		if ( \is_numeric( $attributes['limit'] ) ) {
+			\array_splice( $events, $attributes['limit'] );
+		}
+		
+		if ( empty( $events ) ) {
+			return '<p>' . ( ! empty( $attributes['fallback'] ) ? \esc_html( $attributes['fallback'] ) : '' ) . '</p>';
+		}
+		
+		\ob_start();
+		include __DIR__ . '/../templates/meetup-event.php';
+		
+		return (string) \ob_get_clean();
 	}
 }

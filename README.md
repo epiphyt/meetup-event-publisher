@@ -13,13 +13,13 @@ After installing, go to **Settings > Writing > Meetup.com Slug** and set the slu
 
 After that, once daily the plugin checks the Meetup.com API for meetups and creates/updates the next meetup as blog post.
 
-### Shortcode
+### Shortcodes
 
-You can access and output many data of the event, e.g. `name`, `local_date`, `local_time`, `link`, `description` etc.
+#### `[meetup_event]`
 
-Shortcode name: `[meetup_event]`
+You can access and output many data of the event, e.g. `name`, `local_date`, `link`, `description` etc.
 
-#### Attributes
+##### Attributes
 
 `event`: Access a specific event. Allows selecting by the event name, the local date, the ID or the special command `next` for the next event. Example: `[meetup_event event="2025-10-27"]`
 
@@ -31,6 +31,20 @@ Shortcode name: `[meetup_event]`
 If a field is nested, use dots to traverse the nesting. Example: `[meetup_event field="location.address.street_address"]`
 
 `slug`: If no slug is configured in the settings, you can select the meetup slug of which you want to display data from.
+
+#### `[meetup_event_list]`
+
+Get a list of events.
+
+##### Attributes
+
+`fallback`: A fallback message if no data is available.
+
+`hidden`: A list of fields that are hidden. Currently supported: `organizer`, `title` and `meta`. Multiple fields can be separated by comma.
+
+`limit`: The amount of events you want to list. Default: 10
+
+`slug`: An optional slug to display only events of this meetup.
 
 ## Building
 

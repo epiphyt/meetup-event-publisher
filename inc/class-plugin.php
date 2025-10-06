@@ -97,7 +97,7 @@ final class Plugin {
 	 * @param	string	$event Which event to get
 	 * @return	mixed[] List of event data
 	 */
-	public static function get_events( string $event ): array {
+	public static function get_events( string $event = '' ): array {
 		$events = [];
 		$event_list = (array) \get_option( self::get_option_name( 'events' ) );
 		
@@ -109,6 +109,9 @@ final class Plugin {
 				
 				$events[] = $meetup_events[0];
 			}
+		}
+		else if ( empty( $event ) ) {
+			$events = $event_list;
 		}
 		else {
 			foreach ( $event_list as $meetup_events ) {
