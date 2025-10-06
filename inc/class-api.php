@@ -30,7 +30,7 @@ final class API {
 		
 		$json = \json_decode( $response, true );
 		
-		if ( ! empty( $json['code'] ) ) {
+		if ( ! empty( $json['code'] ) || ! empty( $json['message'] ) ) {
 			\error_log( 'Request: ' . $url . \PHP_EOL ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 			\error_log( print_r( $json, true ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log, WordPress.PHP.DevelopmentFunctions.error_log_print_r
 			

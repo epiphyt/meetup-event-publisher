@@ -50,12 +50,23 @@ final class Plugin {
 		$event = [];
 		$events = \array_filter( (array) \get_option( self::get_option_name( 'events' ) ) );
 		
-		if ( empty( $events ) ) {
+		if ( empty( $events ) || ! empty( $events['message'] ) ) {
 			return $event;
 		}
 		
-		if ( ! empty( $events[ $slug ] ) ) {
+		if ( ! empty( $slug ) && ! empty( $events[ $slug ] ) ) {
 			$events = $events[ $slug ];
+		}
+		else if ( ! \array_is_list( $events ) ) {
+			// if we get the list of all meetups, we need to get the inner list
+			// of each meetup
+			$_events = [];
+			
+			foreach ( $events as $meetup_events ) {
+				$_events = \array_merge( $_events, $meetup_events );
+			}
+			
+			$events = $_events;
 		}
 		
 		if ( $target_event === 'next' ) {
@@ -68,8 +79,7 @@ final class Plugin {
 		else {
 			foreach ( $events as $_event ) {
 				if (
-					isset( $_event['id'] ) && $target_event === $_event['id']
-					|| isset( $_event['local_date'] ) && $target_event === $_event['local_date']
+					isset( $_event['start_date'] ) && $target_event === $_event['start_date']
 					|| isset( $_event['name'] ) && $target_event === $_event['name']
 				) {
 					$event = $_event;
