@@ -68,9 +68,9 @@ final class Plugin {
 		else {
 			foreach ( $events as $_event ) {
 				if (
-					$target_event === $_event['id']
-					|| $target_event === $_event['local_date']
-					|| $target_event === $_event['name']
+					isset( $_event['id'] ) && $target_event === $_event['id']
+					|| isset( $_event['local_date'] ) && $target_event === $_event['local_date']
+					|| isset( $_event['name'] ) && $target_event === $_event['name']
 				) {
 					$event = $_event;
 					break;
