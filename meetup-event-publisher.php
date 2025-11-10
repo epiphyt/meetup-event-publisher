@@ -30,7 +30,7 @@ along with Meetup Event Publisher. If not, see https://www.gnu.org/licenses/gpl-
 */
 \defined( 'ABSPATH' ) || exit;
 
-\define( 'MEETUP_EVENT_PUBLISHER_VERSION', '2.2.0' );
+\define( 'MEETUP_EVENT_PUBLISHER_VERSION', '2.2.1' );
 \define( 'MEETUP_EVENT_PUBLISHER_BASE', WP_PLUGIN_DIR . '/meetup-event-publisher/' );
 \define( 'MEETUP_EVENT_PUBLISHER_FILE', __FILE__ );
 \define( 'MEETUP_EVENT_PUBLISHER_URL', \plugin_dir_url( MEETUP_EVENT_PUBLISHER_FILE ) );
