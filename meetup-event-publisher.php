@@ -2,16 +2,18 @@
 namespace epiphyt\Meetup_Event_Publisher;
 
 /*
-Plugin Name:	Meetup Event Publisher
-Description:	Retrieve events from meetup.com and publishes them as posts.
-Author:			Epiphyt
-Author URI:		https://epiph.yt/en/
-Version:		2.2.0
-License:		GPL2
-License URI:	https://www.gnu.org/licenses/gpl-2.0.html
-Requires PHP:	8.3
-Text Domain:	meetup-event-publisher
-Domain Path:	/languages
+Plugin Name:		Meetup Event Publisher
+Description:		Retrieve events from meetup.com and publishes them as posts.
+Author:				Epiphyt
+Author URI:			https://epiph.yt/en/
+Version:			2.2.1
+License:			GPL2
+License URI:		https://www.gnu.org/licenses/gpl-2.0.html
+Requires PHP:		8.3
+Text Domain:		meetup-event-publisher
+Domain Path:		/languages
+GitHub Plugin URI:	https://github.com/epiphyt/meetup-event-publisher
+Release Asset:		true
 
 Meetup Event Publisher is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
